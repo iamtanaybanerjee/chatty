@@ -30,4 +30,20 @@ const registerUser = async (req, res) => {
   }
 };
 
+const loginUser = async (req, res) => {
+  const body = req.body;
+  try {
+    const errors = validateUsername(body);
+    if (errors.length > 0) return res.status(400).json({ errors });
+
+    const value = await doesUsernameExist(body.username);
+    if (value === false)
+      return res
+        .status(404)
+        .json({ message: "User does not exist, please sign-up" });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = { registerUser };
