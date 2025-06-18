@@ -22,4 +22,14 @@ const createUser = async (body) => {
   }
 };
 
-module.exports = { createUser };
+const isLoginSuccessful = async (body) => {
+  try {
+    const userObj = await User.findOne({ username: body.username });
+    const isPasswordMatch = await userObj.comparePassword(body.password);
+    return isPasswordMatch === true ? true : false;
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports = { createUser, isLoginSuccessful };

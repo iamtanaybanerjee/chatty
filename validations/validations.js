@@ -9,9 +9,6 @@ const validateUsername = (body) => {
   ) {
     errors.push("Username is required and must be a string");
   }
-  // if (!body.email || typeof body.email !== "string" || body.email === "") {
-  //   errors.push("Email is required and must be a string");
-  // }
 
   return errors;
 };
@@ -25,11 +22,5 @@ const doesUsernameExist = async (username) => {
     throw error;
   }
 };
-
-// const validateEmail = (email) => {
-//   return (
-//     email.includes("@") && email.includes(".") && typeof email === "string"
-//   );
-// };
 
 module.exports = { validateUsername, doesUsernameExist };

@@ -2,7 +2,7 @@ const {
   validateUsername,
   doesUsernameExist,
 } = require("../validations/validations");
-const { createUser } = require("../services/user.services");
+const { createUser, isLoginSuccessful } = require("../services/user.services");
 
 const registerUser = async (req, res) => {
   const body = req.body;
@@ -13,10 +13,6 @@ const registerUser = async (req, res) => {
     const value = await doesUsernameExist(body.username);
     if (value === true)
       return res.status(400).json({ error: "Username already exist" });
-
-    // const value2 = await validateEmail(body.email);
-    // if (value2 === false)
-    //   return res.status(400).json({ error: "Invalid email" });
 
     //move forward
     const response = await createUser(body);
@@ -41,9 +37,17 @@ const loginUser = async (req, res) => {
       return res
         .status(404)
         .json({ message: "User does not exist, please sign-up" });
+
+    //move forward
+    const resposne = await isLoginSuccessful(body);
+    if (resposne === true)
+      return res
+        .status(200)
+        .json({ message: "Login successful", username: body.username });
+    else return res.status(400).json({ error: "Invalid password" });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
 };
 
-module.exports = { registerUser };
+module.exports = { registerUser, loginUser };
