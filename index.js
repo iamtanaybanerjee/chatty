@@ -6,7 +6,6 @@ const { Server } = require("socket.io");
 const http = require("http");
 const Message = require("./models/Message.model");
 const User = require("./models/User.model");
-const { getMessages } = require("./controllers/message.controllers");
 
 const app = express();
 const server = http.createServer(app);
@@ -30,9 +29,8 @@ io.on("connection", (socket) => {
   socket.on("send_message", async (data) => {
     const { sender, receiver, message } = data;
     const messageObj = await Message.create({ sender, receiver, message });
+    socket.broadcast.emit("receive_message", data);
   });
-
-  socket.broadcast.emit("receive_message", data);
 
   socket.on("disconnect", () => {
     console.log("user disconnected", socket.id);
@@ -62,6 +60,7 @@ app.get("/users", async (req, res) => {
         $ne: currentUser,
       },
     });
+    res.json(users);
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
